@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>io.roqu.triskell.nuxeo</groupId>
+	<artifactId>triskell-nuxeo-distribution</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>Triskell Nuxeo distribution</name>
+	<packaging>pom</packaging>
+
+	<properties>
+		<nuxeo.version>RAB-6.1.6</nuxeo.version>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.nuxeo.ecm.platform</groupId>
+			<artifactId>nuxeo-platform-login-portal-sso</artifactId>
+			<version>${nuxeo.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<!-- Upgrade client jdbc pour postgres < 14 -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.27</version>
+		</dependency>
+
+
+		<!-- Required for ThemeManager -->
+		<dependency>
+			<groupId>com.phloc</groupId>
+			<artifactId>phloc-commons</artifactId>
+			<version>4.6.7</version>
+		</dependency>
+
+	</dependencies>
+	
+	<build>
+		<defaultGoal>package</defaultGoal>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.2.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.nuxeo.ecm.distribution</groupId>
+									<artifactId>nuxeo-distribution-tomcat</artifactId>
+									<version>${nuxeo.version}</version>
+									<type>zip</type>
+									<classifier>nuxeo-cap</classifier>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}/nuxeo-distrib</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+
+					<execution>
+						<id>zip</id>
+						<phase>process-resources</phase>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/assembly/assembly.xml</descriptor>
+							</descriptors>
+							<finalName>${project.artifactId}-${project.version}</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+							<attach>true</attach>
+						</configuration>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+
+			</plugin>
+
+			<!-- Release -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

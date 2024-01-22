@@ -1,0 +1,104 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	<id>bin</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+
+	<dependencySets>
+
+		<dependencySet>
+			<outputDirectory>/${artifactId}-${project.version}/nxserver/plugins
+			</outputDirectory>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<includes>
+				<!-- Login & SSO -->
+				<include>org.nuxeo.ecm.platform:nuxeo-platform-login-portal-sso:jar:${nuxeo.version}
+				</include>
+
+
+			</includes>
+		</dependencySet>
+
+<!--
+		<dependencySet>
+			<outputDirectory>/${artifactId}-${project.version}/nxserver/bundles
+			</outputDirectory>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<includes>
+
+			</includes>
+		</dependencySet>
+-->
+
+		<dependencySet>
+			<outputDirectory>/${artifactId}-${project.version}/nxserver/lib
+			</outputDirectory>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<includes>
+                <!-- Dependencies for ThemeManager -->
+				<include>com.phloc:phloc-commons:jar:4.6.7</include>
+			</includes>
+		</dependencySet>
+
+
+<!-- Tomcat libs 
+		<dependencySet>
+			<outputDirectory>/${artifactId}-${project.version}/lib
+			</outputDirectory>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<includes>
+				<include>org.apache.logging.log4j:log4j-api:jar:${log4j.version}</include>
+				<include>org.apache.logging.log4j:log4j-core:jar:${log4j.version}</include>
+				<include>org.apache.logging.log4j:log4j-jcl:jar:${log4j.version}</include>
+				<include>org.apache.logging.log4j:log4j-1.2-api:jar:${log4j.version}</include>
+				<include>org.apache.logging.log4j:log4j-slf4j-impl:jar:${log4j.version}</include>
+			</includes>
+		</dependencySet>
+
+-->
+		<!-- Postgresql lib -->
+		<dependencySet>
+			<outputDirectory>/${artifactId}-${project.version}/templates/postgresql/lib
+			</outputDirectory>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<includes>
+				<include>org.postgresql:postgresql:jar:42.2.27</include>
+			</includes>
+		</dependencySet>
+	</dependencySets>
+
+	<fileSets>
+		<!-- Socle -->
+		<fileSet>
+			<outputDirectory>/${artifactId}-${project.version}
+			</outputDirectory>
+			<directory>target/nuxeo-distrib/nuxeo-cap-${nuxeo.version}-tomcat</directory>
+			<includes>
+				<include>**</include>
+			</includes>
+			<!-- Surcharges -->
+			<excludes>
+				<!-- log4j
+				<exclude>lib/log4j.xml</exclude> -->
+				<!-- Services Nx -->
+				<exclude>templates/postgresql/lib/*</exclude>
+			</excludes>
+		</fileSet>
+
+		<!-- Templates -->
+		<fileSet>
+			<outputDirectory>/${artifactId}-${project.version}</outputDirectory>
+			<directory>src/main/resources</directory>
+		</fileSet>
+	</fileSets>
+
+</assembly>
